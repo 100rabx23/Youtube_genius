@@ -3,8 +3,8 @@ import requests
 import sys
 import time
 
-sys.path.append("../backend")
-from database import save_quiz_attempt
+requests.get("https://youtube-genius-backend.onrender.com/dashboard")
+
 
 BACKEND_URL = "https://youtube-genius-backend.onrender.com/process"
 
