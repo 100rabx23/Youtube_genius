@@ -1,12 +1,10 @@
 import streamlit as st
 import requests
-import sys
 import time
 
-requests.get("https://youtube-genius-backend.onrender.com/dashboard")
-
-
-BACKEND_URL = "https://youtube-genius-backend.onrender.com/process"
+API = "https://youtube-genius-backend.onrender.com"
+PROCESS_URL = f"{API}/process"
+SUBMIT_URL = f"{API}/submit"
 
 st.title("🧠 Interactive Quiz")
 
@@ -29,11 +27,12 @@ if "answered" not in st.session_state:
 
 
 def fetch_quiz(regenerate=False):
-    return requests.post(
-        BACKEND_URL,
+    response = requests.post(
+        PROCESS_URL,
         json={"url": url, "regenerate": regenerate},
         timeout=120
-    ).json()
+    )
+    return response.json()
 
 
 # ---------------- Generate Quiz ----------------
@@ -85,10 +84,7 @@ if st.session_state.quiz_data:
                     correct = q["answer"].strip().lower()
                     selected_norm = selected.strip().lower()
 
-                    if len(correct) == 1:
-                        is_correct = selected_norm.startswith(correct)
-                    else:
-                        is_correct = selected_norm == correct
+                    is_correct = selected_norm.startswith(correct[0])
 
                     st.session_state.answered = True
 
@@ -114,9 +110,20 @@ if st.session_state.quiz_data:
 
         st.success(f"Final Score: {st.session_state.score}/{total} ({percentage}%)")
 
-        # Save attempt correctly
+        # 🔥 SAVE RESULT VIA API (Correct Production Way)
         video_id = url.split("v=")[-1].split("&")[0]
-        save_quiz_attempt(video_id, st.session_state.score, total)
+
+        try:
+            requests.post(
+                SUBMIT_URL,
+                json={
+                    "video_id": video_id,
+                    "score": st.session_state.score,
+                    "total": total
+                }
+            )
+        except:
+            st.warning("Could not save result to server.")
 
         # Performance Feedback
         if percentage >= 80:
@@ -126,7 +133,6 @@ if st.session_state.quiz_data:
         else:
             st.error("📚 Weak grasp. Revisit the video and retry.")
 
-        # AI Insight Block (NOW CORRECTLY INSIDE)
         st.markdown("## 🤖 AI Learning Insight")
 
         if percentage < 50:
