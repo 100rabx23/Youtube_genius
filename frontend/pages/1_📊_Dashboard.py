@@ -1,6 +1,8 @@
 import streamlit as st
 import sys
 import pandas as pd
+import requests
+
 
 requests.get("https://youtube-genius-backend.onrender.com/dashboard")
 
