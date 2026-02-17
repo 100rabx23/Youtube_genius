@@ -1,8 +1,7 @@
 import streamlit as st
 import sys
-sys.path.append("../backend")
+requests.get("https://youtube-genius-backend.onrender.com/dashboard")
 
-from database import get_history
 
 st.title("📂 Quiz History")
 
