@@ -2,8 +2,8 @@ import streamlit as st
 import sys
 import pandas as pd
 
-sys.path.append("../backend")
-from database import get_topic_performance
+requests.get("https://youtube-genius-backend.onrender.com/dashboard")
+
 
 st.title("📈 Topic Performance")
 
