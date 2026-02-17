@@ -6,7 +6,7 @@ import time
 sys.path.append("../backend")
 from database import save_quiz_attempt
 
-BACKEND_URL = "http://127.0.0.1:8000/process"
+BACKEND_URL = "https://youtube-genius-backend.onrender.com/process"
 
 st.title("🧠 Interactive Quiz")
 
