@@ -2,8 +2,7 @@ import streamlit as st
 import sys
 import pandas as pd
 
-sys.path.append("../backend")
-from database import get_dashboard_stats, get_score_trend
+requests.get("https://youtube-genius-backend.onrender.com/dashboard")
 
 st.title("📊 Learning Overview")
 
