@@ -1,6 +1,7 @@
 import streamlit as st
 import requests
 import time
+from youtube_transcript_api import YouTubeTranscriptApi
 
 API = "https://youtube-genius-backend.onrender.com"
 PROCESS_URL = f"{API}/process"
@@ -26,12 +27,49 @@ if "answered" not in st.session_state:
     st.session_state.answered = False
 
 
+# ---------------- Transcript Fetch ----------------
+def fetch_transcript(video_id):
+    try:
+        transcript_list = YouTubeTranscriptApi.list_transcripts(video_id)
+
+        try:
+            transcript = transcript_list.find_transcript(['en'])
+        except:
+            transcript = next(iter(transcript_list))
+
+        snippets = transcript.fetch()
+
+        transcript_text = " ".join(
+            s["text"] if isinstance(s, dict) else s.text
+            for s in snippets
+        )
+
+        return transcript_text
+
+    except Exception:
+        st.error("Could not fetch transcript. Video may not have captions.")
+        return None
+
+
+# ---------------- Fetch Quiz ----------------
 def fetch_quiz(regenerate=False):
+    video_id = url.split("v=")[-1].split("&")[0]
+
+    transcript_text = fetch_transcript(video_id)
+
+    if not transcript_text:
+        return {}
+
     response = requests.post(
         PROCESS_URL,
-        json={"url": url, "regenerate": regenerate},
+        json={
+            "video_id": video_id,
+            "transcript": transcript_text,
+            "regenerate": regenerate
+        },
         timeout=120
     )
+
     return response.json()
 
 
@@ -80,23 +118,20 @@ if st.session_state.quiz_data:
 
         if not st.session_state.answered:
             if st.button("Submit"):
-                with st.spinner("Checking answer..."):
-                    correct = q["answer"].strip().lower()
-                    selected_norm = selected.strip().lower()
+                correct_letter = q["answer"].strip()[0].lower()
+                selected_letter = selected.strip()[0].lower()
 
-                    is_correct = selected_norm.startswith(correct[0])
+                st.session_state.answered = True
 
-                    st.session_state.answered = True
+                if selected_letter == correct_letter:
+                    st.success("Correct ✅")
+                    st.session_state.score += 1
+                else:
+                    st.error("Incorrect ❌")
+                    st.info(f"Correct Answer: {q['answer']}")
 
-                    if is_correct:
-                        st.success("Correct ✅")
-                        st.session_state.score += 1
-                    else:
-                        st.error("Incorrect ❌")
-                        st.info(f"Correct Answer: {q['answer']}")
-
-                    st.markdown("### Explanation")
-                    st.write(q["explanation"])
+                st.markdown("### Explanation")
+                st.write(q["explanation"])
 
         if st.session_state.answered:
             if st.button("Next ➡"):
@@ -104,13 +139,11 @@ if st.session_state.quiz_data:
                 st.session_state.answered = False
                 st.rerun()
 
-    # ---------------- Final Result ----------------
     else:
         percentage = int((st.session_state.score / total) * 100)
 
         st.success(f"Final Score: {st.session_state.score}/{total} ({percentage}%)")
 
-        # 🔥 SAVE RESULT VIA API (Correct Production Way)
         video_id = url.split("v=")[-1].split("&")[0]
 
         try:
@@ -125,7 +158,6 @@ if st.session_state.quiz_data:
         except:
             st.warning("Could not save result to server.")
 
-        # Performance Feedback
         if percentage >= 80:
             st.info("🔥 Strong understanding of the topic.")
         elif percentage >= 50:
@@ -133,18 +165,8 @@ if st.session_state.quiz_data:
         else:
             st.error("📚 Weak grasp. Revisit the video and retry.")
 
-        st.markdown("## 🤖 AI Learning Insight")
-
-        if percentage < 50:
-            st.write("You should revisit foundational concepts and attempt similar quizzes.")
-        elif percentage < 80:
-            st.write("Focus on understanding explanations deeply for better retention.")
-        else:
-            st.write("Great performance. Try more advanced topics to level up.")
-
         if st.button("Generate New Questions 🔄"):
-            with st.spinner("Generating new questions..."):
-                data = fetch_quiz(regenerate=True)
+            data = fetch_quiz(regenerate=True)
 
             if "quiz" in data:
                 st.session_state.quiz_data = data["quiz"]
