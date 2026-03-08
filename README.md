@@ -8,6 +8,8 @@ This repository contains a FastAPI backend for an AI-powered quiz application us
 - Dashboard with statistics, topic-wise analytics, and score trend.
 - CORS enabled for frontend integration.
 
+
+*****
 ## Requirements
 - Python 3.8+
 - FastAPI
