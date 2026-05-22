@@ -9,7 +9,7 @@ DB_NAME = os.path.join(BASE_DIR, "database.db")
 def get_connection():
     return sqlite3.connect(DB_NAME)
 
-
+#dataae
 def init_db():
     conn = get_connection()
     cursor = conn.cursor()
