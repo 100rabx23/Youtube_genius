@@ -16,8 +16,8 @@ from database import (
     get_score_trend
 )
 
-# ---------------- INIT -----------
-# ---------------- MAIN -----------
+# ---------- INIT -----------
+# ---------- MAIN -----------
 app = FastAPI()
 
 app.add_middleware(
