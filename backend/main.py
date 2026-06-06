@@ -18,9 +18,6 @@ from database import (
 
 # -------- INIT ---------
 # -------- MAIN ---------
-
-
-# @@@@@@@@@@@@@@@@@@@@@@@@@@@ #
 app = FastAPI()
 
 app.add_middleware(
