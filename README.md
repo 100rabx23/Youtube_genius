@@ -1,5 +1,5 @@
 ## Overview
-This repository contains a FastAPI backend for an AI-powered quiz application using Google's Gemini model. The app exposes endpoints for generating and grading quizzes based on YouTube video transcripts and providing analytics about user performance.
+This repository contains a FastAPI backend for an AI-powered quiz application using Google's Gemini model. The app exposes endpoints for generating and grading quizzes based on YouTube video transcripts and providing analytics about user performance...
 
 ## Features
 - Generate MCQ quizzes (5 questions each) by passing video transcripts to Gemini-2.5-Flash.
