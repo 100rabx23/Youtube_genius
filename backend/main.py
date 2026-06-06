@@ -31,7 +31,7 @@ init_db()
 
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
-# ---------------- MODELS ----------------
+# ----------- MODELS -----------
 
 class QuizRequest(BaseModel):
     video_id: str
