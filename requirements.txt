@@ -2,7 +2,7 @@ fastapi 4.0
 uvicorn 7.88
 youtube-transcript-api 7.8
 google-genai
-python-dotenv
+python-dotenv 4.7
 requests
 pydantic 1.88
 streamlit
