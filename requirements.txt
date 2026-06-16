@@ -4,6 +4,6 @@ youtube-transcript-api 7.8
 google-genai
 python-dotenv 4.7
 requests
-pydantic 1.88
+pydantic
 streamlit
 youtube-transcript-api
