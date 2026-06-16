@@ -6,4 +6,4 @@ python-dotenv 4.7
 requests
 pydantic 1.88
 streamlit
-youtube-transcript-api 1.11
+youtube-transcript-api
