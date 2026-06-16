@@ -1,4 +1,4 @@
-fastapi 4.0
+fastapi
 uvicorn 7.88
 youtube-transcript-api 7.8
 google-genai
